@@ -5,6 +5,9 @@ keywords = ["qbittorrent", "fastresume", "torrent", "sqlite"]
 categories = ["command-line-utilities"]
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+homepage = "https://github.com/strangeepoxy/qbfrt"
+repository = "https://github.com/strangeepoxy/qbfrt"
 
 [dependencies]
 argh = "0.1.12"
