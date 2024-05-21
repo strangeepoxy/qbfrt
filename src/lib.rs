@@ -1,26 +1,16 @@
-//! Command line tool for working with qBittorrent's fastresume data
+//! # qbfrt (qBittorrent fastresume tool)
+//! Command line tool for working with qBittorrent's fastresume data. Supports the
+//! experimental SQLite database and (soon) traditional .fastresume files.
 //!
 //! ## Features
 //! With this tool you can:
-//! - Currently do nothing!
+//! - Mass update the save paths for torrents in the SQLite database
+//!     - Change files to a new drive or directory without having to move torrents in qBittorrent or recheck all of the torrent data
+//!     - Migrate from qBittorrent on Windows to Linux without having to recheck the torrent data
 //!
 //! **More functionality to come!**
-//!
-//! The application will look for the default qBittorrent data directory
-//! containing the torrents.db file. This behavior can be changed by passing
-//! `--data_dir /some/path/to/db`
-//!
-//! ## Arguments
-//! - `-p` / `--data_dir` - Path to the qB .torrent data directory (where torrents.db lives)
-//! - `-d` / `--disable_backup` - Disables the automatic torrents.db backup
-//! - `-v` / `--verbose` - Enables more verbose output
-//!
-//! ## Examples and Usage
-//!
-//! ## Notes
 
 #![warn(missing_docs)]
 
 pub mod config;
 pub mod db;
-pub mod fastresume_db;

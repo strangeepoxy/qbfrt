@@ -2,19 +2,20 @@
 //!
 //! Configures the application based on the passed command line arguments
 
+use crate::db::save_path::SavePath;
 use argh::FromArgs;
+use core::panic;
 use directories::BaseDirs;
-use std::path::{Path, PathBuf};
+use std::path::{Path, PathBuf, MAIN_SEPARATOR};
 
 /// Returns the OS-specific qB .torrent data directory
 fn get_qb_dir() -> PathBuf {
     let base_dirs = BaseDirs::new().unwrap();
-    let local_appdata_dir = base_dirs.data_local_dir();
-    local_appdata_dir.join("qBittorrent")
+    base_dirs.data_local_dir().join("qBittorrent")
 }
 
 /// CLI argument options
-#[derive(FromArgs)]
+#[derive(Debug, FromArgs)]
 struct CLIOpts {
     /// path to qB local config directory (where torrents.db lives)
     #[argh(option, short = 'p')]
@@ -25,6 +26,18 @@ struct CLIOpts {
     /// enable verbose output
     #[argh(switch, short = 'v')]
     verbose: bool,
+    /// path string to replace
+    #[argh(option)]
+    old_path: Option<String>,
+    /// new path string
+    #[argh(option)]
+    new_path: Option<String>,
+    /// force using path slash '/' separators
+    #[argh(switch)]
+    use_unix_sep: bool,
+    /// force using Windows backslash '\' separators
+    #[argh(switch)]
+    use_win_sep: bool,
 }
 
 /// Application configuration generated from CLI arguments
@@ -32,10 +45,12 @@ struct CLIOpts {
 pub struct Config {
     /// Path to qB local config directory (where torrents.db lives)
     pub qb_directory: PathBuf,
-    /// The full path to torrents.db
+    /// The full path to torrents.db file
     pub db_file: PathBuf,
-    /// Toggles the automatic torrents.db backup
+    /// Disables the automatic torrents.db backup
     pub disable_backup: bool,
+    /// Torrent save path information
+    pub save_path: Option<SavePath>,
     /// Toggles verbose output
     pub verbose: bool,
 }
@@ -55,23 +70,56 @@ impl Config {
         let qb_dir = get_qb_dir();
 
         let qb_directory = match args.config_dir {
-            Some(dir) => Path::new("").join(dir),
+            Some(dir) => PathBuf::from(&dir),
             _ => qb_dir,
         };
 
         let db_file = Path::new(&qb_directory).join("torrents.db");
 
+        let save_path = match (args.old_path, args.new_path) {
+            (Some(old), Some(new)) => {
+                let separator: String;
+                if args.use_unix_sep {
+                    separator = '/'.to_string();
+                } else if args.use_win_sep {
+                    separator = '\\'.to_string();
+                } else {
+                    separator = MAIN_SEPARATOR.to_string();
+                }
+
+                // qB saves a Unix-style path irrespective of OS, so we need to use that in some places
+                // Yes, even Windows network paths are saved that way e.g. \\server\folder -> //server/folder
+                let old_unix = old.replace('\\', "/");
+                let new_unix = new.replace('\\', "/");
+
+                // qB saves the path in a second location with OS-specific separators. It will be up to the user
+                // to pick the appropriate separator for the existing path to replace
+                Some(SavePath {
+                    old_unix,
+                    new_unix,
+                    old,
+                    new,
+                    separator,
+                })
+            }
+            (None, None) => None,
+            (Some(_old), None) => panic!("--new-path is missing!"),
+            (None, Some(_new)) => panic!("--old-path is missing!"),
+        };
+
         let config = Config {
             qb_directory,
             db_file,
             disable_backup: args.disable_backup,
+            save_path,
             verbose: args.verbose,
         };
 
         if config.verbose {
             println!("Verbose output enabled");
-            println!("Using {:?} as qB directory", config.qb_directory);
-            println!("{:?}", config);
+            println!("Using {:?} as qB directory", config.qb_directory.display());
+            println!("Using {:?} as qB database", config.db_file.display());
+            println!("Save path: {:?}", config.save_path);
         }
 
         Ok(config)
