@@ -3,8 +3,12 @@ Command line tool for working with qBittorrent's fastresume data. Supports the e
 
 `queue-bee-fart`
 
+<br>
+
 ## Why?
-> The qBittorrent SQLite database is still experimental. While it drastically improves start up times when you have many torrents, most tools that manipulate qBittorrent fastresume data do not support the new database. This tool prevents you from having to convert back to the .fastresume files to use those other fastresume tools.
+The qBittorrent SQLite database is still experimental. While it drastically improves start up times when you have many torrents, most tools that manipulate qBittorrent fastresume data do not support the new database. This tool prevents you from having to convert back to the .fastresume files to use those other fastresume tools.
+
+<br>
 
 ## Features
 With this tool you can:
@@ -19,6 +23,8 @@ The application will look for the default qBittorrent data directory
 containing the torrents.db file. This behavior can be changed by passing
 `--data_dir /some/path/to/db`
 
+<br>
+
 ## Arguments
 - `-p, --config_dir` - Path to the qB local config directory (where torrents.db lives)
     - uses default qBittorrent data directory if not specified
@@ -32,6 +38,8 @@ containing the torrents.db file. This behavior can be changed by passing
 - `--new-path` - The new save path or partial path to replace with
 - `--use-unix-sep` - Force using path slash "/" for updated paths
 - `--use-win-sep` - Force using Windows separators "\" for updated paths
+
+<br>
 
 ## Examples and Usage
 ### Updating save path on Unix
@@ -55,6 +63,8 @@ will still use Windows "\" path separators. Note you would have to escape the ba
 qbfrt -v --old-path "D:\\Downloads" --new-path "C:\\" --use-win-sep
 ```
 
+<br>
+
 ## Notes
 - By default, a timestamped backup of the torrents.db file will be created before processing changes. Currently,
 a simple file copy is used to do the backup, not a proper SQL dump. **qBittorrent should be completely shut down
@@ -72,19 +82,21 @@ you will have to convert the hex blob to text.
 program directory. See [here](https://github.com/moby/moby/issues/24029#issuecomment-250412919). Run the command with command
 prompt or powershell instead.
 
+<br>
+
 ## Building From Source
 Until I figure out how to compile cross-platform, you're going to have to do it yourself.
 
 
 ### 1. [Install Rust](https://www.rust-lang.org/tools/install)
 ### 2. Clone the git repo:
-    ```bash
-    git clone https://github.com/strangeepoxy/qbfrt.git
-    ```
+```bash
+git clone https://github.com/strangeepoxy/qbfrt.git
+```
 ### 3. Compile the app:
-    ```bash
-    cargo build --release
-    ```
+```bash
+cargo build --release
+```
 ### 4. Move the compiled executable where you want it:
 #### Unix
 ```bash
@@ -96,12 +108,12 @@ move ./target/release/qbfrt.exe C:/place/you/want/qbfrt.exe
 ```
 ### 5. (Optional) Add qbfrt to your path
 
+<br>
 
 ## Updating From Source
 
-
 ### 1. Pull updates from repo:
-    ```bash
-    git pull
-    ```
+```bash
+git pull
+```
 ### 2. Follow "Building From Source" starting at step #3.
