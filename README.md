@@ -15,6 +15,7 @@ With this tool you can:
 - Mass update the save paths for torrents in the SQLite database
     - Change files to a new drive or directory without having to move torrents in qBittorrent or recheck all of the torrent data
     - Migrate from qBittorrent on Windows to Linux without having to recheck the torrent data
+- Mass update the tracker URLs for torrents in the SQLite database
 
 
 **More functionality to come!**
@@ -33,6 +34,10 @@ containing the torrents.db file. This behavior can be changed by passing
     - requires `--new-path` to be provided
 - `--new-path` - New save path or path fragment to replace existing path
     - requires `--existing-path` to be provided
+  `--old-tracker` - Existing tracker or URL fragment
+    - requires `--new-tracker` to be provided
+- `--new-tracker` - New tracker or URL fragment to replace existing tracker
+    - requires `--old-tracker` to be provided
 - `-v, --verbose` - Enables more verbose output
 - `--old-path` - The old save path or partial path to replace
 - `--new-path` - The new save path or partial path to replace with
@@ -62,6 +67,17 @@ will still use Windows "\" path separators. Note you would have to escape the ba
 ```bash
 qbfrt -v --old-path "D:\\Downloads" --new-path "C:\\" --use-win-sep
 ```
+### Updating tracker URL
+Here the torrent has the following trackers: 
+- `http://some.tracker:6969/tracker`
+- `http://other.tracker:6969/tracker`
+
+Running the following command will result in the trackers becoming:
+- `http://some.tracker:6969/tracker`
+- `http://beans.tracker:6969/tracker`
+```bash
+qbfrt -v --old-tracker other --new-tracker beans
+```
 
 <br>
 
@@ -73,10 +89,11 @@ before running this tool.**
 if you are updating partial paths that may share segments with others. e.g. `--existing-path /torrents/movie` will
 match both `/torrents/movies` and `/torrents/movie-folder`. Avoid using a single word, it will replace all instances
 of it.
+- Like the save path, the tracker replacement uses a lazy find and replace. It will replace all instances of the old string.
 - If you end a string with a slash, use care to include a slash at the end of the new string, otherwise it will remove it.
 - You have to run the command once for each path you want to change, currently you can not batch different path replacements.
 - Use something like [Beekeeper Studio](https://www.beekeeperstudio.io/) to confirm the appropriate changes
-were made. Check the `target_save_path` column. You can check the libtorrent_resume_data save path, but first
+were made. Check the `target_save_path` column. You can check the libtorrent_resume_data save path and tracker list, but first
 you will have to convert the hex blob to text.
 - Git bash/MINGW64 on Windows: mingw messes up partial paths starting with "/" and makes them relative to the local git
 program directory. See [here](https://github.com/moby/moby/issues/24029#issuecomment-250412919). Run the command with command

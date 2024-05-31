@@ -7,6 +7,7 @@
 //! - Mass update the save paths for torrents in the SQLite database
 //!     - Change files to a new drive or directory without having to move torrents in qBittorrent or recheck all of the torrent data
 //!     - Migrate from qBittorrent on Windows to Linux without having to recheck the torrent data
+//! - Mass update the tracker URLs for torrents in the SQLite database
 //!
 //! **More functionality to come!**
 

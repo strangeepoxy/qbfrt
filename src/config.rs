@@ -3,6 +3,7 @@
 //! Configures the application based on the passed command line arguments
 
 use crate::db::save_path::SavePath;
+use crate::db::tracker_url::TrackerUrl;
 use argh::FromArgs;
 use core::panic;
 use directories::BaseDirs;
@@ -38,6 +39,12 @@ struct CLIOpts {
     /// force using Windows backslash '\' separators
     #[argh(switch)]
     use_win_sep: bool,
+    /// tracker string to replace
+    #[argh(option)]
+    old_tracker: Option<String>,
+    /// new tracker string
+    #[argh(option)]
+    new_tracker: Option<String>,
 }
 
 /// Application configuration generated from CLI arguments
@@ -51,6 +58,8 @@ pub struct Config {
     pub disable_backup: bool,
     /// Torrent save path information
     pub save_path: Option<SavePath>,
+    /// Torrent tracker url information
+    pub tracker_url: Option<TrackerUrl>,
     /// Toggles verbose output
     pub verbose: bool,
 }
@@ -107,11 +116,19 @@ impl Config {
             (None, Some(_new)) => panic!("--old-path is missing!"),
         };
 
+        let tracker_url = match (args.old_tracker, args.new_tracker) {
+            (Some(old), Some(new)) => Some(TrackerUrl { old, new }),
+            (None, None) => None,
+            (Some(_old), None) => panic!("--new-tracker is missing!"),
+            (None, Some(_new)) => panic!("--old-tracker is missing!"),
+        };
+
         let config = Config {
             qb_directory,
             db_file,
             disable_backup: args.disable_backup,
             save_path,
+            tracker_url,
             verbose: args.verbose,
         };
 
@@ -120,6 +137,7 @@ impl Config {
             println!("Using {:?} as qB directory", config.qb_directory.display());
             println!("Using {:?} as qB database", config.db_file.display());
             println!("Save path: {:?}", config.save_path);
+            println!("Tracker url: {:?}", config.tracker_url);
         }
 
         Ok(config)

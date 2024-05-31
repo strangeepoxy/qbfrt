@@ -173,3 +173,14 @@ pub struct FetchedPathData {
     /// Binary blob containing fastresume data
     pub libtorrent_resume_data: Vec<u8>,
 }
+
+/// A subset of database columns needed for libtorrent_resume_data operations
+#[derive(Serialize, Deserialize, Debug)]
+pub struct FetchedLibtorrentResumeData {
+    /// Torrent database row id
+    pub id: u64,
+    /// Torrent hash id
+    pub torrent_id: String,
+    ///Binary blob containing fastresume data
+    pub libtorrent_resume_data: Vec<u8>,
+}

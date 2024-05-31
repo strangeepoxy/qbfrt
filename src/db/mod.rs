@@ -26,6 +26,7 @@ use std::path::Path;
 
 pub mod db_structs;
 pub mod save_path;
+pub mod tracker_url;
 
 /// qB torrents.db struct
 pub struct DB {}

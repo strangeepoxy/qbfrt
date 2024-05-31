@@ -3,7 +3,7 @@ name = "qbfrt"
 description = "Command line tool for working with qBittorrent's fastresume data"
 keywords = ["qbittorrent", "fastresume", "torrent", "sqlite"]
 categories = ["command-line-utilities"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 homepage = "https://github.com/strangeepoxy/qbfrt"
@@ -22,4 +22,4 @@ serde_derive = "1.0.201"
 serde_rusqlite = "0.35.0"
 
 [package.metadata.cargo-machete]
-ignored = ["serde"]
+ignored = ["serde", "serde_bytes"]
